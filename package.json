@@ -1,0 +1,11 @@
+{
+  "name": "dev-office",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "A lean, self-measuring dev office for Claude Code and Codex CLI.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

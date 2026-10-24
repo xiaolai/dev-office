@@ -1,0 +1,18 @@
+{
+  "name": "dev-office",
+  "version": "0.1.1",
+  "description": "A lean, self-measuring dev office: perception hooks, test tiers, git routine, tidy, ADRs, and three short agents. Logic lives in host-neutral scripts; this tree is the Claude Code adapter.",
+  "author": {
+    "name": "xiaolai"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/xiaolai/dev-office",
+  "repository": "https://github.com/xiaolai/dev-office",
+  "skills": "./claude/skills/",
+  "agents": [
+    "./claude/agents/planner.md",
+    "./claude/agents/implementer.md",
+    "./claude/agents/verifier.md"
+  ],
+  "hooks": "./claude/hooks/hooks.json"
+}

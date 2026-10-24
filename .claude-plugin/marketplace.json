@@ -1,0 +1,7 @@
+{
+  "name": "dev-office",
+  "owner": { "name": "xiaolai" },
+  "plugins": [
+    { "name": "dev-office", "source": "./", "description": "Lean, self-measuring dev office.", "version": "0.1.1", "repository": "https://github.com/xiaolai/dev-office" }
+  ]
+}

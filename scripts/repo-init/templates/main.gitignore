@@ -1,0 +1,62 @@
+# AI tooling: machine-local, written wherever the tools run, never project source. Bare
+# names, not rules anchored to this directory.
+.cc-suite/
+.cc-suite.md
+.codex/
+CLAUDE.md
+.claude/settings.local.json
+.claude/worktrees/
+
+# Secrets and local environment. Keep credentials in a credential store; never commit
+# them. .env files belong at the workspace root or outside the repository.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+
+# Dependencies and build output. A plugin that ships built files must re-include its
+# exact path, for example:
+#   !plugins/<name>/dist/
+#   !plugins/<name>/dist/**
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+dist/
+build/
+*.tsbuildinfo
+
+# Python plugin hooks and tests.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Test and coverage reports.
+coverage/
+.coverage
+.coverage.*
+htmlcov/
+*.lcov
+
+# Logs, caches, temporary output.
+*.log
+logs/
+.cache/
+.eslintcache
+
+# OS and editor files.
+.DS_Store
+._*
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

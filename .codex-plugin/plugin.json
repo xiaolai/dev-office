@@ -1,0 +1,12 @@
+{
+  "name": "dev-office",
+  "version": "0.1.1",
+  "description": "A lean, self-measuring dev office: perception hooks, test tiers, git routine, tidy, ADRs, and three short agents. Logic lives in host-neutral scripts; this tree is the Codex CLI adapter, derived from the Claude one.",
+  "author": { "name": "xiaolai" },
+  "license": "MIT",
+  "homepage": "https://github.com/xiaolai/dev-office",
+  "repository": "https://github.com/xiaolai/dev-office",
+  "skills": "./codex/skills/",
+  "hooks": "./codex/hooks.json",
+  "commands": []
+}

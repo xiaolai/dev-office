@@ -1,0 +1,17 @@
+{
+  "budget": { "instruction_lines": 200 },
+  "verifier": {
+    "triggers": ["security", "data-model", "migration", "release", "repeated-failure"],
+    "diff_lines_threshold": 300
+  },
+  "tests": {
+    "tiers": { "edit": null, "pr": null, "full": null },
+    "journeys_command": null,
+    "quarantine": []
+  },
+  "release": { "tag_prefix": "v", "changelog": "CHANGELOG.md" },
+  "tidy": { "ds_store": true, "worktree_prune": true, "merged_branches": true, "maintenance": true },
+  "adr": { "dir": null },
+  "env_audit": { "allow": [] },
+  "log": { "path": "~/.dev-office/log.jsonl" }
+}

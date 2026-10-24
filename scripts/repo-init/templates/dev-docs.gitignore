@@ -1,0 +1,9 @@
+# AI tooling: machine-local, written wherever the tools run, never project source. Bare
+# names, not rules anchored to this directory.
+.cc-suite/
+.cc-suite.md
+.codex/
+CLAUDE.md
+
+# macOS
+.DS_Store

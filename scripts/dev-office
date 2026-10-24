@@ -1,0 +1,38 @@
+#!/bin/sh
+# dev-office: one entry point for every script in the plugin. Host adapters
+# (Claude and Codex hooks and skills) call this; nothing else holds logic.
+set -u
+command -v node >/dev/null 2>&1 || { printf 'dev-office: node is required and was not found on PATH\n' >&2; exit 2; }
+self=$(node -e 'process.stdout.write(require("fs").realpathSync(process.argv[1]))' "$0")
+here=$(CDPATH= cd -- "$(dirname -- "$self")" && pwd -P)
+cmd=${1:-help}
+[ "$#" -gt 0 ] && shift
+case $cmd in
+    config|session-start|log-session|test|tidy|env-audit|hooks-install|report|release|adr|repo-init|install|gen-codex)
+        exec node "$here/$cmd.mjs" "$@" ;;
+    version)
+        node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).version+"\n")' "$here/../.claude-plugin/plugin.json" ;;
+    help|-h|--help)
+        cat <<'USAGE'
+usage: dev-office <command> [args]
+
+  config [--json]              effective configuration and the layer each key came from
+  session-start [--host H]     SessionStart hook: budget line and orchestration rules
+  log-session [--host H]       SessionEnd hook: append one session record to the log (H: claude|codex)
+  test <edit|pr|full> [--dry-run] [-- args]
+                               run a test tier, enforce quarantine expiry, log runtime
+  tidy [--apply]               junk files, pruned worktrees, merged branches, maintenance
+  env-audit                    exported variables of credential shape; names only
+  hooks-install                chain ~/.git-hooks into a repo that has its own hooks path
+  report [--days N] [--json]   sessions and test runs from the log
+  release <version> [--push] [--skip-tests]
+                               preflight, tag; push only when asked
+  adr new <title> | refute <file> | list
+  repo-init [workspace] [--check] [--maintenance]
+  install                      link this CLI into ~/.local/bin, prepare ~/.dev-office, copy Codex agents
+  gen-codex [--check]          derive codex/ skills and agents from claude/; --check only reports drift
+  version
+USAGE
+        ;;
+    *) printf 'dev-office: unknown command %s (try: dev-office help)\n' "$cmd" >&2; exit 2 ;;
+esac
