@@ -81,7 +81,9 @@ test('a log-write failure is reported, but still exits with the test command\'s 
   // mkdirSync on it throws, while config loading itself (which only reads
   // ~/.dev-office/config.json, not the log path) is unaffected.
   fs.writeFileSync(path.join(home, 'blocked'), 'not a directory');
-  fs.writeFileSync(path.join(repo, '.dev-office.json'), JSON.stringify({ tests: { tiers: { edit: 'exit 0' } }, log: { path: path.join(home, 'blocked', 'log.jsonl') } }));
+  fs.mkdirSync(path.join(home, '.dev-office'), { recursive: true });
+  fs.writeFileSync(path.join(home, '.dev-office', 'config.json'), JSON.stringify({ log: { path: path.join(home, 'blocked', 'log.jsonl') } }));
+  fs.writeFileSync(path.join(repo, '.dev-office.json'), JSON.stringify({ tests: { tiers: { edit: 'exit 0' } } }));
   const env = { ...process.env, HOME: home };
   const r = spawnSync(process.execPath, [script, 'edit'], { cwd: repo, encoding: 'utf8', env });
   assert.equal(r.status, 0, 'the test itself passed; a logging failure must not turn that into a crash');

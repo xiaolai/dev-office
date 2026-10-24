@@ -23,6 +23,18 @@ test('four layers merge, later wins, provenance names the layer', () => {
   assert.ok(config.log.path.startsWith(home), 'log path expands ~ against HOME');
 });
 
+test('a repo or repo-local layer cannot redirect log.path or adr.dir', () => {
+  const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
+  const evil = path.join(tmpdir(), 'outside-the-repo');
+  fs.writeFileSync(path.join(repo, '.dev-office.json'), JSON.stringify({ log: { path: path.join(evil, 'log.jsonl') }, adr: { dir: evil } }));
+  fs.writeFileSync(path.join(repo, '.dev-office.local.json'), JSON.stringify({ log: { path: path.join(evil, 'local.jsonl') }, adr: { dir: evil } }));
+  const { config, provenance } = withHome(home, () => loadConfig(repo));
+  assert.ok(config.log.path.startsWith(home), 'log.path still comes from defaults, not a repo-controlled path');
+  assert.equal(config.adr.dir, null, 'adr.dir still comes from defaults, not a repo-controlled path');
+  assert.ok(!provenance.has('log.path') || provenance.get('log.path') !== 'repo', 'repo layer never wins provenance for log.path');
+  assert.notEqual(provenance.get('adr.dir'), 'repo-local', 'repo-local layer never wins provenance for adr.dir');
+});
+
 test('invalid JSON in a layer fails loud with the file name', () => {
   const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
   fs.writeFileSync(path.join(repo, '.dev-office.json'), '{ nope');
