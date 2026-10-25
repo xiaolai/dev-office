@@ -54,6 +54,21 @@ test('a user config can turn jev.enabled on', () => {
   assert.equal(provenance.get('jev.enabled'), 'user');
 });
 
+test('a repo or repo-local layer cannot set jev.docket either', () => {
+  const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
+  fs.writeFileSync(path.join(repo, '.dev-office.json'), JSON.stringify({ jev: { docket: 'evil-docket' } }));
+  const { config, provenance } = withHome(home, () => loadConfig(repo));
+  assert.equal(config.jev.docket, 'secret-scan', 'jev.docket still comes from defaults, not a repo-controlled value');
+  assert.notEqual(provenance.get('jev.docket'), 'repo', 'repo layer never wins provenance for jev.docket');
+});
+
+test('a jev.docket that is not a bare identifier fails loud instead of reaching a shell command', () => {
+  const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
+  fs.mkdirSync(path.join(home, '.dev-office'));
+  fs.writeFileSync(path.join(home, '.dev-office', 'config.json'), JSON.stringify({ jev: { docket: 'secret-scan; rm -rf ~' } }));
+  assert.throws(() => withHome(home, () => loadConfig(repo)), /jev\.docket:.*bare identifier/);
+});
+
 test('invalid JSON in a layer fails loud with the file name', () => {
   const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
   fs.writeFileSync(path.join(repo, '.dev-office.json'), '{ nope');

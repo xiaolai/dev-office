@@ -47,7 +47,13 @@ const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 // unnoticed; `jev.enabled` turns on sending diff content to an external
 // calibration service, so a cloned repo cannot opt the user into that
 // without them choosing it themselves.
-const REPO_RESTRICTED_KEYS = new Set(['log.path', 'adr.dir', 'jev.enabled']);
+const REPO_RESTRICTED_KEYS = new Set(['log.path', 'adr.dir', 'jev.enabled', 'jev.docket']);
+
+// A docket name is a bare identifier, never shell syntax. Checked at load
+// time, the one place every consumer of config.jev.docket passes through,
+// so a value that could break out of `jev docket <name>` is rejected before
+// any script or skill ever builds that command line.
+const JEV_DOCKET_PATTERN = /^[a-z0-9-]+$/;
 
 function merge(target, source, layer, provenance, prefix) {
   const repoScoped = layer === 'repo' || layer === 'repo-local';
@@ -79,6 +85,9 @@ export function loadConfig(cwd = process.cwd()) {
     merge(config, data, layer.name, provenance, '');
   }
   if (config.log) config.log.path = expandHome(config.log.path);
+  if (config.jev && config.jev.docket !== null && config.jev.docket !== undefined && !JEV_DOCKET_PATTERN.test(config.jev.docket)) {
+    throw new Error(`jev.docket: "${config.jev.docket}" is not a bare identifier (must match ${JEV_DOCKET_PATTERN})`);
+  }
   return { config, provenance, files, repo: repoRoot(cwd) };
 }
 
