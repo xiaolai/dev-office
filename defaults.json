@@ -13,5 +13,6 @@
   "tidy": { "ds_store": true, "worktree_prune": true, "merged_branches": true, "maintenance": true },
   "adr": { "dir": null },
   "env_audit": { "allow": [] },
-  "log": { "path": "~/.dev-office/log.jsonl" }
+  "log": { "path": "~/.dev-office/log.jsonl" },
+  "jev": { "enabled": false, "docket": "secret-scan" }
 }

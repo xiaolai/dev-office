@@ -17,6 +17,6 @@ assistant: "I'll confirm the version, check the changelog has a 1.2.1 section, t
 4. Push only when the user asks: `dev-office release <version> --push`, or the two `git push` lines it prints. CI owns publishing from the tag (release-please, GoReleaser, the homebrew tap workflow, npm trusted publishing), not this skill.
 5. `--skip-tests` exists for a hotfix with a documented reason; the tag message records that it was used.
 
-Before any push, inspect the diff since the last tag for secrets and run the secret-scan docket if one is configured.
+Before any push, inspect the diff since the last tag for secrets. If `jev.enabled` is true (`dev-office config` shows it) and `jev` is on PATH, also run `jev docket <jev.docket>` on that diff; quote the probability and the docket name, never launder it into a plain pass or fail. Off, or `jev` missing, or the middle band: say so and rely on the inspection alone.
 
 Scope: preflight, tag and (if asked) push only. It does not publish artifacts itself and does not record the decision behind a release — see `adr` for that.

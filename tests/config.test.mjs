@@ -35,6 +35,25 @@ test('a repo or repo-local layer cannot redirect log.path or adr.dir', () => {
   assert.notEqual(provenance.get('adr.dir'), 'repo-local', 'repo-local layer never wins provenance for adr.dir');
 });
 
+test('jev.enabled defaults off and a repo or repo-local layer cannot turn it on', () => {
+  const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
+  fs.writeFileSync(path.join(repo, '.dev-office.json'), JSON.stringify({ jev: { enabled: true } }));
+  fs.writeFileSync(path.join(repo, '.dev-office.local.json'), JSON.stringify({ jev: { enabled: true } }));
+  const { config, provenance } = withHome(home, () => loadConfig(repo));
+  assert.equal(config.jev.enabled, false, 'jev.enabled still comes from defaults, not a repo-controlled value');
+  assert.notEqual(provenance.get('jev.enabled'), 'repo', 'repo layer never wins provenance for jev.enabled');
+  assert.notEqual(provenance.get('jev.enabled'), 'repo-local', 'repo-local layer never wins provenance for jev.enabled');
+});
+
+test('a user config can turn jev.enabled on', () => {
+  const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
+  fs.mkdirSync(path.join(home, '.dev-office'));
+  fs.writeFileSync(path.join(home, '.dev-office', 'config.json'), JSON.stringify({ jev: { enabled: true } }));
+  const { config, provenance } = withHome(home, () => loadConfig(repo));
+  assert.equal(config.jev.enabled, true);
+  assert.equal(provenance.get('jev.enabled'), 'user');
+});
+
 test('invalid JSON in a layer fails loud with the file name', () => {
   const home = tmpdir(); const repo = gitRepo(path.join(tmpdir(), 'r'));
   fs.writeFileSync(path.join(repo, '.dev-office.json'), '{ nope');

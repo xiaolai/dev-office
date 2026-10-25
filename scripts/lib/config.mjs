@@ -41,10 +41,13 @@ const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 const UNSAFE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 // A repo's `.dev-office.json` travels with the repo and is as untrusted as
-// its code. These keys choose a filesystem location that a hook or command
-// then writes to or reads from; only the defaults and user layers may set
-// them, so a cloned repo cannot redirect a write outside itself unnoticed.
-const REPO_RESTRICTED_KEYS = new Set(['log.path', 'adr.dir']);
+// its code. Only the defaults and user layers may set these: `log.path` and
+// `adr.dir` choose a filesystem location that a hook or command then writes
+// to or reads from, so a cloned repo cannot redirect a write outside itself
+// unnoticed; `jev.enabled` turns on sending diff content to an external
+// calibration service, so a cloned repo cannot opt the user into that
+// without them choosing it themselves.
+const REPO_RESTRICTED_KEYS = new Set(['log.path', 'adr.dir', 'jev.enabled']);
 
 function merge(target, source, layer, provenance, prefix) {
   const repoScoped = layer === 'repo' || layer === 'repo-local';
